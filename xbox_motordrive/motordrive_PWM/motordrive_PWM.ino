@@ -10,7 +10,8 @@ const int Right_Motor = 11;
 ros::NodeHandle nh_arduino; // Initiated the node handle
 
 void duty_left (const std_msgs::UInt16& duty_cycle_L){
-  analogWrite(Left_Motor, duty_cycle_L.data);
+  analogWrite(Left_Motor, duty_cycle_L.data); // accessign the data within the 
+  // UInt16 wrapper
 }
 
 void duty_right (const std_msgs::UInt16& duty_cycle_R){
