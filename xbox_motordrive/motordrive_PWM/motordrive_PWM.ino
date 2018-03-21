@@ -4,7 +4,7 @@
 
 const int Left_Motor = 9;
 const int Right_Motor = 10;
-
+const int Green_Light = 1;
 
 ros::NodeHandle nh_arduino; // Initiated the node handle
 
@@ -17,13 +17,21 @@ void duty_right (const std_msgs::UInt16& duty_cycle_R){
   analogWrite(Right_Motor, duty_cycle_R.data);
 }
 
+void light (const std_msgs::UInt16& light){
+  if( light.data == 1 ){
+    digitalWrite(Green_Light, HIGH);
+  }
+}
+
 ros::Subscriber<std_msgs::UInt16> sub_D_L("Duty_Cycle_Left", duty_left);
 ros::Subscriber<std_msgs::UInt16> sub_D_R("Duty_Cycle_Right", duty_right);
+ros::Subscriber<std_msgs::UInt16> sub_L("Light", light);
 
 
 void setup() {
   pinMode(Left_Motor, OUTPUT);
   pinMode(Right_Motor, OUTPUT);
+  pinMode(Green_Light, OUTPUT);
 
   nh_arduino.initNode();
   nh_arduino.subscribe(sub_D_L);
