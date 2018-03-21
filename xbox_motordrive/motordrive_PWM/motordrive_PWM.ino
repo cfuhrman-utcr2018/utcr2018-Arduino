@@ -1,5 +1,4 @@
 #include <ros.h>
-#include <std_msgs/Float64.h>
 #include <std_msgs/UInt16.h>
 #include <stdlib.h>
 
@@ -18,8 +17,8 @@ void duty_right (const std_msgs::UInt16& duty_cycle_R){
   analogWrite(Right_Motor, duty_cycle_R.data);
 }
 
-ros::Subscriber<std_msgs::UInt16> sub_D_L("Duty_Cycle_Left/command", duty_left);
-ros::Subscriber<std_msgs::UInt16> sub_D_R("Duty_Cycle_Right/command", duty_right);
+ros::Subscriber<std_msgs::UInt16> sub_D_L("Duty_Cycle_Left", duty_left);
+ros::Subscriber<std_msgs::UInt16> sub_D_R("Duty_Cycle_Right", duty_right);
 
 
 void setup() {

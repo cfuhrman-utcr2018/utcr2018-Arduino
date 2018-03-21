@@ -29,7 +29,13 @@ void velocity (const Twist& twist){
   
     analogWrite(Left_Motor, L_PWM);
     analogWrite(Right_Motor, R_PWM);
-  
+    
+// Debugging purposes
+    Serial.print("Left PWM is: ");
+    Serial.print(L_PWM);
+    Serial.print("Right PWM is: ");
+    Serial.print(R_PWM);
+// end debug section  
 }
 
 Subscriber<Twist> Cmd_vel_sub("cmd_vel", velocity);
