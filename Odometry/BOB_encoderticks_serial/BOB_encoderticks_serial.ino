@@ -28,35 +28,17 @@
 //============================================================================================
 */
 
-// ===========================================================================================
-/* ROS code written by Connor Fuhrman in 2018 for the IGVC. Code written at The Citadel The 
- *  Miliary COllege of South Corolina for the purpose of competing in the IGVC.
- */
-// ===========================================================================================
-
 // Inclde the standard Arduino SPI Library, please ensure the SPI pins are
 // connected properly for your Arduino version
 #include <SPI.h>
-
-// Include the ROS header file
-#include <ros.h>
-#include <std_msgs/Int16.h>
-#include <stdlib.h>
-// Initialize ROS stuff
-// Init the variabels to be published
-std_msgs::Int16 left_ticks_number;
-std_msgs::Int16 right_ticks_number;
-// Init the publishers
-ros::Publisher left_pub("left_ticks", &left_ticks_number);
-ros::Publisher right_pub("right_ticks", &right_ticks_number);
-// Init the ROS node
-ros::NodeHandle nh_arduino;
-
 
 // Slave Select pins for encoders 1 and 2
 // Feel free to reallocate these pins to best suit your circuit
 const int slaveSelectEnc1 = 7;
 const int slaveSelectEnc2 = 8;
+
+const int flash = 6;
+
 
 // These hold the current encoder count.
 signed long encoder1count = 0;
@@ -175,29 +157,23 @@ void clearEncoderCount() {
 
 
 void setup() {
- //Serial.begin(9600);      // Serial com for data output
- nh_arduino.initNode();
- nh_arduino.advertise(left_pub);
- nh_arduino.advertise(right_pub);
+ Serial.begin(9600);      // Serial com for data output
+ pinMode(flash, OUTPUT);
  
- initEncoders();       //Serial.println("Encoders Initialized...");  
- clearEncoderCount();  //Serial.println("Encoders Cleared...");
+ initEncoders();       Serial.println("Encoders Initialized...");  
+ clearEncoderCount();  Serial.println("Encoders Cleared...");
 }
 
 void loop() {
- //delay(500);
+ delay(500);
  
  // Retrieve current encoder counters
  encoder1count = readEncoder(1); 
  encoder2count = readEncoder(2);
 
- // Assign encoder counts to ROS ticks topics
- left_ticks_number.data = encoder1count;
- right_ticks_number.data = encoder2count;
-
- left_pub.publish(&left_ticks_number);
- right_pub.publish(&right_ticks_number);
-
- nh_arduino.spinOnce();
- //Serial.print("Enc1: "); Serial.print(encoder1count); Serial.print(" Enc2: "); Serial.println(encoder2count); 
+ analogWrite(flash, 255);
+ 
+ Serial.print("Enc1: "); Serial.print(encoder1count); Serial.print(" Enc2: "); Serial.println(encoder2count); 
 }
+
+

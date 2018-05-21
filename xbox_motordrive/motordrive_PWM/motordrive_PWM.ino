@@ -1,10 +1,10 @@
 #include <ros.h>
 #include <std_msgs/UInt16.h>
-#include <stdlib.h>
 
-const int Left_Motor = 9;
-const int Right_Motor = 10;
-const int Green_Light = 2;
+
+const int Left_Motor = 10;
+const int Right_Motor = 9;
+const int Green_Light = 5;
 
 ros::NodeHandle nh_arduino; // Initiated the node handle
 
