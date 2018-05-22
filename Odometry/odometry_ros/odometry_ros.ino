@@ -41,6 +41,7 @@
 // Include the ROS header file
 #include <ros.h>
 #include <std_msgs/Int16.h>
+#include <std_msgs/UInt8.h>
 #include <stdlib.h>
 // Initialize ROS stuff
 // Init the variabels to be published
@@ -49,18 +50,38 @@ std_msgs::Int16 right_ticks_number;
 // Init the publishers
 ros::Publisher left_pub("left_ticks", &left_ticks_number);
 ros::Publisher right_pub("right_ticks", &right_ticks_number);
+
+
 // Init the ROS node
 ros::NodeHandle nh_arduino;
 
 
 // Slave Select pins for encoders 1 and 2
-// Feel free to reallocate these pins to best suit your circuit
 const int slaveSelectEnc1 = 7;
 const int slaveSelectEnc2 = 8;
 
 // These hold the current encoder count.
 signed long encoder1count = 0;
 signed long encoder2count = 0;
+
+// Initialize the motor PWM pins
+const int Left_Motor = 10;
+const int Right_Motor = 9;
+const int Green_Light = 5;
+
+void duty_left (const std_msgs::UInt8& duty_cycle_L){
+  analogWrite(Left_Motor, duty_cycle_L.data); // accessign the data within the 
+  // UInt16 wrapper
+}
+
+void duty_right (const std_msgs::UInt8& duty_cycle_R){
+  analogWrite(Right_Motor, duty_cycle_R.data);
+}
+
+// Init the subscribers
+ros::Subscriber<std_msgs::UInt8> sub_D_L("Duty_Cycle_Left", duty_left);
+ros::Subscriber<std_msgs::UInt8> sub_D_R("Duty_Cycle_Right", duty_right);
+//ros::Subscriber<std_msgs::UInt8> sub_L("Light", light);
 
 void initEncoders() {
   
@@ -175,13 +196,21 @@ void clearEncoderCount() {
 
 
 void setup() {
- //Serial.begin(9600);      // Serial com for data output
- nh_arduino.initNode();
- nh_arduino.advertise(left_pub);
- nh_arduino.advertise(right_pub);
- 
- initEncoders();       //Serial.println("Encoders Initialized...");  
- clearEncoderCount();  //Serial.println("Encoders Cleared...");
+  
+  nh_arduino.initNode();
+  // Make PWM and light pins outputs
+  pinMode(Left_Motor, OUTPUT);
+  pinMode(Right_Motor, OUTPUT);
+  pinMode(Green_Light, OUTPUT);
+  // Start the publishing and subscribing
+  nh_arduino.advertise(left_pub);
+  nh_arduino.advertise(right_pub);
+  nh_arduino.subscribe(sub_D_L);
+  nh_arduino.subscribe(sub_D_R);
+//  nh_arduino.subscribe(sub_L);
+  
+  initEncoders();       //Serial.println("Encoders Initialized...");  
+  clearEncoderCount();  //Serial.println("Encoders Cleared...");
 }
 
 void loop() {
